@@ -2,8 +2,98 @@ const express = require('express');
 const router = express.Router();
 const { Project, User } = require('../models/index.js');
 const ensureAuthenticated = require('../middleware/auth.js');
-
 const mongoose = require('mongoose');
+const multer = require('multer');
+
+// Configure multer for handling file uploads
+const storage = multer.memoryStorage(); // Store as Buffer in memory
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5MB limit
+    },
+    fileFilter: (req, file, cb) => {
+        // Accept only image files
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed!'), false);
+        }
+    }
+});
+
+// Create new project with image upload
+router.post('/', ensureAuthenticated, upload.single('projectImage'), async (req, res) => {
+    try {
+        // First, check if the user exists in MongoDB
+        const user = await User.findOne({ username: req.user.username });
+        if (!user) {
+            return res.status(404).json({
+                error: 'User not found in database. Please complete your profile first.'
+            });
+        }
+
+        // Create project object
+        const projectData = {
+            title: req.body.title,
+            description: req.body.description,
+            percentDone: Number(req.body.percentDone),
+            owner: {
+                _id: user._id,
+                username: user.username
+            },
+            contributors: [{
+                _id: user._id,
+                username: user.username
+            }],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+        };
+
+        // If an image was uploaded, add it to the project data
+        if (req.file) {
+            projectData.image = {
+                data: req.file.buffer,
+                contentType: req.file.mimetype
+            };
+        }
+
+        const project = new Project(projectData);
+        await project.save();
+        
+        res.status(201).json({ 
+            message: 'Project created successfully', 
+            project: {
+                ...project.toObject(),
+                image: project.image ? true : false // Don't send image data in response
+            }
+        });
+
+    } catch (error) {
+        console.error('Error in /submit route:', error);
+        res.status(500).json({ 
+            error: 'Internal server error',
+            details: error.message 
+        });
+    }
+});
+
+// Add a route to serve project images
+router.get('/image/:id', async (req, res) => {
+    try {
+        const project = await Project.findById(req.params.id);
+        if (!project || !project.image || !project.image.data) {
+            return res.status(404).send('No image found');
+        }
+        
+        res.set('Content-Type', project.image.contentType);
+        res.send(project.image.data);
+    } catch (error) {
+        console.error('Error serving image:', error);
+        res.status(500).send('Error serving image');
+    }
+});
+
 
 
 // Create new project
@@ -180,5 +270,6 @@ router.get("/edit/:id", ensureAuthenticated, function (req, res) {
             res.status(500).send("Internal Server Error");
         });
 });
+
 
 module.exports = router;

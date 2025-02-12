@@ -12,6 +12,17 @@ const projectSchema = new mongoose.Schema({
     max: 100,
     default: 0
   },
+  image: {
+    data: Buffer,
+    contentType: String
+  },
+  imageData: {
+    type: Buffer, // Store image data as Buffer
+  },
+ 
+  imgExt: { 
+    type: String, // Store image extension (e.g., 'jpg', 'png')
+  },
   owner: {
     _id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -40,6 +51,7 @@ const projectSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+ 
 });
 
 module.exports = mongoose.model('Project', projectSchema);
