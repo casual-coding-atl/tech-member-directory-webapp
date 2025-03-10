@@ -1,94 +1,116 @@
 <%- include('partials/headers/header') %>
 
 <div class="container">
-    <div class="jumbotron centered">
-        <h1 class="display-3">Member Projects</h1>
-        <p class="project-text">Project Features</p>
 
-        <form action="/projects">
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input
-                    type="text"
-                    class="form-control text-center"
-                    name="title"
-                    id="title"
-                    placeholder=" Name of Your Project"
-                />
+  <div class="jumbotron centered">
+    <h1 class="display-3">Member Projects</h1>
+    <p class="project-text">Project Features</p>
 
-                <label for="percent-done">Percent Done</label>
-                <input
-                    type="number"
-                    class="form-control text-center"
-                    name="percentDone"
-                    id="percent-done"
-                    placeholder="Percent Completed"
-                />
 
-                <label for="description">Description</label>
-                <input
-                    type="text"
-                    class="form-control text-center"
-                    name="description"
-                    id="description"
-                    placeholder="Description"
-                />
-            </div>
+    <form enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="title">Title</label>
+        <input
+          type="text"
+          class="form-control text-center"
+          name="title"
+          id="title"
+          placeholder="Name of Your Project"
+          required
+        />
+        
+        <label for="percent-done">Percent Done</label>
+        <input
+          type="number"
+          class="form-control text-center"
+          name="percentDone"
+          id="percent-done"
+          placeholder="Percent Completed"
+          min="0"
+          max="100"
+        />
+        
+        <label for="description">Description</label>
+        <input
+          type="text"
+          class="form-control text-center"
+          name="description"
+          id="description"
+          placeholder="Description"
+        />
 
-            <button id="backBtn" class="btn btn-dark">Back</button>
-            <button type="submit" class="btn btn-dark">Submit</button>
-        </form>
+        <label for="project-image">Project Image</label>
+        <input
+          type="file"
+          class="form-control-file"
+          name="projectImage"
+          id="project-image"
+          accept="image/*"
+        />
+        <small class="form-text text-muted">Supported formats: JPG, PNG, GIF</small>
+      </div>
 
-        <script>
-            async function handleSubmit(event) {
-                event.preventDefault(); // Prevent default form submission
+      <button type="submit" class="btn btn-dark">Submit</button>
+    </form>
 
-                const title = document.querySelector("#title");
-                const percentDone = document.querySelector("#percent-done");
-                const description = document.querySelector("#description");
+    <script>
+      async function handleSubmit(event) {
+        event.preventDefault();
 
-                const formData = {
-                    title: title.value,
-                    percent_done: Number(percentDone.value),
-                    description: description.value,
-                };
+        const title = document.querySelector("#title");
+        const percentDone = document.querySelector("#percent-done");
+        const description = document.querySelector("#description");
+        const imageFile = document.querySelector("#project-image").files[0];
 
-                // console.log(formData);
+        // Create FormData object for handling file upload
+        const formData = new FormData();
+        formData.append("title", title.value);
+        formData.append("percentDone", percentDone.value);
+        formData.append("description", description.value);
 
-                try {
-                    const response = await fetch("/projects", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify(formData),
-                    });
+        if (imageFile) {
+          // Validate file size (e.g., max 5MB)
+          const maxSize = 5 * 1024 * 1024;
+          if (imageFile.size > maxSize) {
+            alert("Image file must be smaller than 5MB");
+            return;
+          }
+          formData.append("projectImage", imageFile);
+        }
 
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.status}`);
-                    }
+        try {
+          const response = await fetch('/projects', {
+            method: "POST",
+            body: formData // Don't set Content-Type header - browser will set it automatically
+          });
 
-                    const result = await response.json();
-                    console.log("Server response:", result);
+          if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+          }
 
-                    window.location.href = "/projects/tables";
-                } catch (error) {
-                    // TODO Show error message.
-                    console.error("Error submitting form:", error);
-                }
-            }
+          const result = await response.json();
+          console.log("Server response:", result);
 
-            async function navigateBack() {
-                //sends user to previous page.
-                navigation.back();
-            }
+          window.location.href = "/projects/tables";
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          alert("Error submitting project. Please try again.");
+        }
+      }
 
-            const form = document.querySelector("form");
-            const backButton = document.getElementById("backBtn");
-            backButton.addEventListener("click", navigateBack);
-            form.addEventListener("submit", handleSubmit);
-        </script>
-    </div>
+      // Add image preview functionality (optional)
+      document.querySelector("#project-image").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file && !file.type.startsWith('image/')) {
+          alert('Please select an image file');
+          this.value = '';
+        }
+      });
+
+      const form = document.querySelector("form");
+      form.addEventListener("submit", handleSubmit);
+    </script>
+  </div>
 </div>
 
 <%- include('partials/footer') %>
