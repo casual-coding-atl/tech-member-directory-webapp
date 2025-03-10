@@ -1,95 +1,98 @@
-<%- include('partials/header') %>
+<%- include('partials/headers/header') %>
 
 <div class="container">
-  <div class="jumbotron centered">
-    <h1 class="display-3">Member Projects</h1>
-    <p class="project-text">Project Features</p>
+    <div class="jumbotron centered">
+        <h1 class="display-3">Member Projects</h1>
+        <p class="project-text">Project Features</p>
 
-    <form action="/projects">
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input
-          type="text"
-          class="form-control text-center"
-          name="title"
-          id="title"
-          placeholder=" Name of Your Project"
-        />
+        <form action="/projects">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input
+                    type="text"
+                    class="form-control text-center"
+                    name="title"
+                    id="title"
+                    placeholder=" Name of Your Project"
+                />
 
-        <label for="percent-done">Percent Done</label>
-        <input
-          type="number"
-          class="form-control text-center"
-          name="percentDone"
-          id="percent-done"
-          placeholder="Percent Completed"
-        />
+                <label for="percent-done">Percent Done</label>
+                <input
+                    type="number"
+                    class="form-control text-center"
+                    name="percentDone"
+                    id="percent-done"
+                    placeholder="Percent Completed"
+                />
 
-        <label for="description">Description</label>
-        <input
-          type="text"
-          class="form-control text-center"
-          name="description"
-          id="description"
-          placeholder="Description"
-        />
-      </div>
+                <label for="description">Description</label>
+                <input
+                    type="text"
+                    class="form-control text-center"
+                    name="description"
+                    id="description"
+                    placeholder="Description"
+                />
+            </div>
 
-      <button type="submit" class="btn btn-dark">Submit</button>
-    </form>
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </form>
 
-    <script>
-      const form = document.querySelector("form");
-      const title = document.querySelector("#title");
-      const percentDone = document.querySelector("#percent-done");
-      const description = document.querySelector("#description");
-      var project = {};
+        <script>
+            const form = document.querySelector("form");
+            const title = document.querySelector("#title");
+            const percentDone = document.querySelector("#percent-done");
+            const description = document.querySelector("#description");
+            var project = {};
 
-      async function handleSubmit(event) {
-        event.preventDefault(); // Prevent default form submission
+            async function handleSubmit(event) {
+                event.preventDefault(); // Prevent default form submission
 
-        const formData = {
-          title: title.value,
-          percentDone: Number(percentDone.value),
-          description: description.value,
-        };
+                const formData = {
+                    title: title.value,
+                    percentDone: Number(percentDone.value),
+                    description: description.value,
+                };
 
-        console.log(formData);
+                console.log(formData);
 
-        try {
-          const baseUrl = "<%= locals.baseUrl %>";
-          const response = await fetch(`${baseUrl}/projects/${project._id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          });
+                try {
+                    const baseUrl = "<%= locals.baseUrl %>";
+                    const response = await fetch(
+                        `${baseUrl}/projects/${project._id}`,
+                        {
+                            method: "PATCH",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(formData),
+                        }
+                    );
 
-          if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-          }
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
 
-          const result = await response.json();
-          console.log("Server response:", result);
+                    const result = await response.json();
+                    console.log("Server response:", result);
 
-          window.location.href = "/projects/tables";
-        } catch (error) {
-          // TODO Show error message.
-          console.error("Error submitting form:", error);
-        }
-      }
+                    window.location.href = "/projects/tables";
+                } catch (error) {
+                    // TODO Show error message.
+                    console.error("Error submitting form:", error);
+                }
+            }
 
-      form.addEventListener("submit", handleSubmit);
+            form.addEventListener("submit", handleSubmit);
 
-      document.addEventListener("DOMContentLoaded", function () {
-        project = JSON.parse('<%- JSON.stringify(locals.project) %>');
-        title.value = project.title;
-        percentDone.value = project.percentDone;
-        description.value = project.description;
-      });
-    </script>
-  </div>
+            document.addEventListener("DOMContentLoaded", function () {
+                project = JSON.parse("<%- JSON.stringify(locals.project) %>");
+                title.value = project.title;
+                percentDone.value = project.percentDone;
+                description.value = project.description;
+            });
+        </script>
+    </div>
 </div>
 
 <%- include('partials/footer') %>
