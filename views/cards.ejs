@@ -1,23 +1,25 @@
-<%- include('partials/header') %>
+<%- include('partials/headers/header') %>
 
 <div class="jumbotron text-center">
-  <div class="container">
-    <h2 class="display-3">Casual Coding Project(s)</h2>
+    <div class="container">
+        <h2 class="display-3">Casual Coding Project(s)</h2>
 
-    <% projects.forEach(function(project) { %>
-      <div class="card">
-        <h3><%= project.title %></h3>
-        <p>Owner: <%= project.owner.username %></p>
-        <p><%= project.percentDone %>% done</p>
-        <p>Description: <%= project.description %></p>
-      </div>
-    <% }); %>
+        <% projects.forEach(function(project) { %>
+        <div class="card">
+            <h3><%= project.title %></h3>
+            <p>Owner: <%= project.owner.username %></p>
+            <p><%= project.percentDone %>% done</p>
+            <p>Description: <%= project.description %></p>
+        </div>
+        <% }); %>
 
-    <hr>
-  
-    <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
-    <a class="btn btn-dark btn-lg" href="/projects/submit" role="button">Submit a Project</a>
-  </div>
+        <hr />
+
+        <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
+        <a class="btn btn-dark btn-lg" href="/projects/submit" role="button"
+            >Submit a Project</a
+        >
+    </div>
 </div>
 
 <%- include('partials/footer') %>

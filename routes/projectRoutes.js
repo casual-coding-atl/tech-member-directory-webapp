@@ -17,6 +17,8 @@ router.post("/", ensureAuthenticated, async (req, res) => {
         }
 
         console.log("\n", req.body);
+        //validate data before creating project.
+
         // If user exists, proceed with project creation
         const project = new Project({
             title: req.body.title,
@@ -123,9 +125,13 @@ router.delete("/:id", ensureAuthenticated, async function (req, res) {
                 );
         }
 
-        await Project.findByIdAndDelete(projectId);
-        //after deletion user should be redirected to home page
-        res.json({ message: "Project deleted successfully." });
+        const response = await Project.findByIdAndDelete(projectId);
+        // after deletion user should be redirected to home page
+        if (response) {
+            return res.json({ message: "Project deleted successfully." });
+        } else {
+            return res.redirect("/projects");
+        }
     } catch (error) {
         console.error("Error deleting project:", error);
         res.status(500).send("Internal Server Error.");

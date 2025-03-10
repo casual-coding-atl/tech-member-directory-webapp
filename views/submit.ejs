@@ -1,87 +1,94 @@
-<%- include('partials/header') %>
+<%- include('partials/headers/header') %>
 
 <div class="container">
-  <div class="jumbotron centered">
-    <h1 class="display-3">Member Projects</h1>
-    <p class="project-text">Project Features</p>
+    <div class="jumbotron centered">
+        <h1 class="display-3">Member Projects</h1>
+        <p class="project-text">Project Features</p>
 
-    <form action="/projects">
-      <div class="form-group">
-      <label for="title">Title</label>
-        <input
-          type="text"
-          class="form-control text-center"
-          name="title"
-          id="title"
-          placeholder=" Name of Your Project"
-        />
-        
-        <label for="percent-done">Percent Done</label>
-        <input
-          type="number"
-          class="form-control text-center"
-          name="percentDone"
-          id="percent-done"
-          placeholder="Percent Completed"
-        />
-        
-        <label for="description">Description</label>
-        <input
-          type="text"
-          class="form-control text-center"
-          name="description"
-          id="description"
-          placeholder="Description"
-        />
-      </div>
+        <form action="/projects">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input
+                    type="text"
+                    class="form-control text-center"
+                    name="title"
+                    id="title"
+                    placeholder=" Name of Your Project"
+                />
 
-      <button type="submit" class="btn btn-dark">Submit</button>
-    </form>
+                <label for="percent-done">Percent Done</label>
+                <input
+                    type="number"
+                    class="form-control text-center"
+                    name="percentDone"
+                    id="percent-done"
+                    placeholder="Percent Completed"
+                />
 
-    <script>
-      async function handleSubmit(event) {
-        event.preventDefault(); // Prevent default form submission
+                <label for="description">Description</label>
+                <input
+                    type="text"
+                    class="form-control text-center"
+                    name="description"
+                    id="description"
+                    placeholder="Description"
+                />
+            </div>
 
-        const title = document.querySelector("#title");
-        const percentDone = document.querySelector("#percent-done");
-        const description = document.querySelector("#description");
+            <button id="backBtn" class="btn btn-dark">Back</button>
+            <button type="submit" class="btn btn-dark">Submit</button>
+        </form>
 
-        const formData = {
-          title: title.value,
-          percent_done: Number(percentDone.value),
-          description: description.value,
-        };
+        <script>
+            async function handleSubmit(event) {
+                event.preventDefault(); // Prevent default form submission
 
-        console.log(formData);
+                const title = document.querySelector("#title");
+                const percentDone = document.querySelector("#percent-done");
+                const description = document.querySelector("#description");
 
-        try {
-          const response = await fetch('/projects', {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          });
+                const formData = {
+                    title: title.value,
+                    percent_done: Number(percentDone.value),
+                    description: description.value,
+                };
 
-          if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-          }
+                // console.log(formData);
 
-          const result = await response.json();
-          console.log("Server response:", result);
+                try {
+                    const response = await fetch("/projects", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(formData),
+                    });
 
-          window.location.href = "/projects/tables";
-        } catch (error) {
-          // TODO Show error message.
-          console.error("Error submitting form:", error);
-        }
-      }
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.status}`);
+                    }
 
-      const form = document.querySelector("form");
-      form.addEventListener("submit", handleSubmit);
+                    const result = await response.json();
+                    console.log("Server response:", result);
 
-    </script>
-  </div>
+                    window.location.href = "/projects/tables";
+                } catch (error) {
+                    // TODO Show error message.
+                    console.error("Error submitting form:", error);
+                }
+            }
+
+            async function navigateBack() {
+                //sends user to previous page.
+                navigation.back();
+            }
+
+            const form = document.querySelector("form");
+            const backButton = document.getElementById("backBtn");
+            backButton.addEventListener("click", navigateBack);
+            form.addEventListener("submit", handleSubmit);
+        </script>
+    </div>
 </div>
 
 <%- include('partials/footer') %>
