@@ -9,6 +9,7 @@ const passport = require("passport");
 const MongoDBStore = require('connect-mongodb-session')(session);
 const { Project, User } = require('./models');
 const projectsRouter = require('./routes/projectRoutes');
+const authRoutes = require("./routes/auth/");
 
 const app = express();
 
@@ -78,6 +79,7 @@ app.get("/register", function (req, res) {
   res.render("register");
 });
 
+app.use(authRoutes)
 
 app.get("/logout", function (req, res) {
   req.session.destroy((err) => {
@@ -91,21 +93,6 @@ app.get("/logout", function (req, res) {
     }
   });
 });
-
-
-app.post("/register", function (req, res) {
-  User.register({ username: req.body.username, email: req.body.email }, req.body.password, function (err, user) {
-    if (err) {
-      console.log(err);
-      res.redirect("/register");
-    } else {
-      passport.authenticate("local")(req, res, function () {
-        res.redirect("/projects/cards");
-      });
-    }
-  });
-});
-
 
 app.post("/login", function (req, res) {
   // TODO Users can send a capitalized username if they target this route directly
