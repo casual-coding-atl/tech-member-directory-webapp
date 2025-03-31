@@ -1,31 +1,75 @@
-<%- include('partials/header') %>
-<div class="container mt-5">
-  <h1>Login</h1>
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8" />
+        <title>Login Page</title>
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+            crossorigin="anonymous"
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+            integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+            crossorigin="anonymous"
+        />
+        <link rel="stylesheet" href="css/styles.css" />
+        <script
+            src="https://kit.fontawesome.com/52688b9dba.js"
+            crossorigin="anonymous"
+        ></script>
+    </head>
 
-  <div class="row">
-    <div class="col-sm-8">
-      <div class="card">
-        <div class="card-body">
-          <!-- Makes POST request to /login route -->
-          <form action="/login" method="POST" id="loginForm">
-            <div class="form-group">
-              <label for="username">Username</label>
-              <input type="text" class="form-control" name="username" id="username"/>
+    <div>
+        <%- include('partials/headers/logoHeader') %>
+
+        <body class="login-page">
+            <div class="login-body">
+                <div class="container-fluid">
+                    <h1>Login</h1>
+                    <div class="card">
+                        <div class="card-body">
+                            <form action="/login" method="POST" id="loginForm">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        name="username"
+                                        id="username"
+                                    />
+                                </div>
+                                <!-- <div class="form-group"> -->
+                                <!-- <label for="email">Email</label> -->
+                                <!-- <input type="email" class="form-control" name="email"> -->
+                                <!-- </div> -->
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input
+                                        type="password"
+                                        class="form-control"
+                                        name="password"
+                                        id="password"
+                                    />
+                                </div>
+                                <button type="submit" class="btn btn-dark">
+                                    Login
+                                </button>
+                            </form>
+                            <div class="reg-link mt-4 text-center">
+                                <span>
+                                    New Here? Let's
+                                    <a href="/Register">Register</a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <!-- <div class="form-group"> -->
-              <!-- <label for="email">Email</label> -->
-              <!-- <input type="email" class="form-control" name="email"> -->
-            <!-- </div> -->
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" class="form-control" name="password" id="password"/>
-            </div>
-            <button type="submit" class="btn btn-dark">Login</button>
-          </form>
-        </div>
-      </div>
+        </body>
     </div>
-
     <!-- <div class="col-sm-4">
       <div class="card">
         <div class="card-body">
@@ -36,16 +80,12 @@
         </div>
       </div>
     </div> -->
-  </div>
-</div>
+    <script>
+        const loginForm = document.getElementById("loginForm");
 
-<script>
-  const loginForm = document.getElementById("loginForm");
-
-  loginForm.addEventListener("submit", async function (event) {
-    const usernameInput = document.querySelector("#username");
-    usernameInput.value = usernameInput.value.toLowerCase();
-  });
-</script>
-
-<%- include('partials/footer') %>
+        loginForm.addEventListener("submit", async function (event) {
+            const usernameInput = document.querySelector("#username");
+            usernameInput.value = usernameInput.value.toLowerCase();
+        });
+    </script>
+</html>
